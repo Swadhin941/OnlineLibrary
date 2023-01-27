@@ -1,0 +1,22 @@
+{% extends 'Layout.html' %}
+{% block body %}
+<link rel="stylesheet" href="{{url_for('static', filename ='css/faq.css')}}">
+<div class="container-fluid">
+    <div class="row">
+        {% for faq in faq %}
+        <div class="col-12 col-sm-6 col-md-4 col-lg-4 mx-auto">
+            <div class="card faqCard">
+                <div class="card-body">
+                    <h5 class="card-title text-success fw-bold">
+                        {{faq[1]}}
+                    </h5>
+                    <div class="card-text">
+                        {{faq[2]}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

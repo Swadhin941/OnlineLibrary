@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="{{url_for('static', filename= 'css/navbar.css')}}">
+  <title>Online Library Testing</title>
+</head>
+
+<body>
+
+  <nav class="navbar navbar-expand-lg bg-teal">
+    <div class="container-fluid">
+      <a class="navbar-brand text-white" href="{{url_for('home')}}">Online Library</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
+        aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link  text-white" aria-current="page" href="{{url_for('home')}}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" id="allBookLink" href="{{url_for('allBook')}}">All Book</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="{{url_for('Blog')}}" id="blogLink">Blog</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="{{url_for('faq')}}" id="faqLink">FAQs</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="{{url_for('faq')}}" id="faqLink">Category</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="{{url_for('faq')}}" id="faqLink">Writer</a>
+          </li>
+          {% if session['userid'] is not defined %}
+          <li class="nav-item">
+            <a class="nav-link text-white" href="{{url_for('Login')}}" id="loginLink">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-white" href="{{url_for('Register')}}" id="registerLink">Register</a>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <span class="nav-link text-white" id="logoutLink">Logout</span>
+          </li>
+
+        </ul>
+        <div class="navbar-text">
+          <div style="position: absolute; right: 10px;bottom:10px ;">
+            <div>
+              <button class="btn text-white border-0" id="profileClick"><i
+                  class="bi bi-person-circle fs-5 "></i></button>
+            </div>
+          </div>
+          <div class="d-none" id="profile">
+            <div class="row">
+              <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                <a href="{{url_for('cart')}}" class="btn text-white d-block btn-secondary w-100 shadow-lg">Cart</a>
+                <a href="{{url_for('userdashBoard')}}"
+                  class="btn d-block btn-secondary w-100 mt-2 shadow-lg text-white">Dashboard</a>
+                <a href="{{url_for('wish')}}"
+                  class="btn d-block btn-secondary w-100 mt-2 shadow-lg text-white">Wishlist</a>
+                <a href="{{url_for('profile')}}"
+                  class="btn d-block btn-secondary w-100 mt-2 shadow-lg text-white">Profile</a>
+
+              </div>
+            </div>
+          </div>
+          <div class="">
+            <div class="row">
+              <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="navbar-text">
+          <div style="position: absolute; right: 40px;bottom:10px ;">
+            <div>
+              <a href="{{url_for('admin')}}"><button class="btn text-white border-0" id="adminClick">Admin Panel</button></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    </div>
+  </nav>
+
+
+  {% block body %} {% endblock %}
+
+  <div class="container my-5">
+    <!-- Footer -->
+    <footer class="text-center text-white" style="background-color: #3f51b5">
+      <!-- Grid container -->
+      <div class="container">
+        <!-- Section: Links -->
+        <section class="mt-5">
+          <!-- Grid row-->
+          <div class="row text-center d-flex justify-content-center pt-5">
+            <!-- Grid column -->
+            <div class="col-md-2">
+              <h6 class="text-uppercase font-weight-bold">
+                <a href="#!" class="text-white">About us</a>
+              </h6>
+            </div>
+            <!-- Grid column -->
+
+            <!-- Grid column -->
+            <div class="col-md-2">
+              <h6 class="text-uppercase font-weight-bold">
+                <a href="#!" class="text-white">All Books</a>
+              </h6>
+            </div>
+            <!-- Grid column -->
+
+            <!-- Grid column -->
+            <div class="col-md-2">
+              <h6 class="text-uppercase font-weight-bold">
+                <a href="#!" class="text-white">Home</a>
+              </h6>
+            </div>
+            <!-- Grid column -->
+
+            <!-- Grid column -->
+            <div class="col-md-2">
+              <h6 class="text-uppercase font-weight-bold">
+                <a href="#!" class="text-white">Help</a>
+              </h6>
+            </div>
+            <!-- Grid column -->
+
+            <!-- Grid column -->
+            <div class="col-md-2">
+              <h6 class="text-uppercase font-weight-bold">
+                <a href="#!" class="text-white">Contact</a>
+              </h6>
+            </div>
+            <!-- Grid column -->
+          </div>
+          <!-- Grid row-->
+        </section>
+        <!-- Section: Links -->
+
+        <hr class="my-5" />
+
+        <!-- Section: Text -->
+        <section class="mb-5">
+          <div class="row d-flex justify-content-center">
+            <div class="col-lg-8">
+            </div>
+          </div>
+        </section>
+      </div>
+      <!-- Grid container -->
+
+      <!-- Copyright -->
+      <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">
+        © 2022 Copyright:
+        <span class="text-dark">Online Library</span>
+      </div>
+      <!-- Copyright -->
+    </footer>
+    <!-- Footer -->
+  </div>
+  <!-- End of .container -->
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
+    crossorigin="anonymous"></script>
+  <script src="{{url_for('static', filename= 'js/navbar.js')}}"></script>
+</body>
+
+</html>

@@ -1,0 +1,8 @@
+dt {
+    display: inline-block;
+    font-size: 1.5rem;
+}
+
+.text-yellow {
+    color: rgb(250, 250, 0);
+}

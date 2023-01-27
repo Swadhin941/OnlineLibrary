@@ -1,0 +1,33 @@
+{% extends "Layout.html" %}
+{% block body %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-center bg-secondary">
+        <img src="https://preview.redd.it/h5gnz1ji36o61.png?width=225&format=png&auto=webp&s=84379f8d3bbe593a2e863c438cd03e84c8a474fa" alt="" class="img-fluid" style="border-radius: 50%;">
+    </div>
+    <h1 class="text-center fw-bold text-secondary">Ummey Zannat</h1>
+
+    <div class="d-flex justify-content-center">
+        <button class="btn btn-primary">Edit Profile</button>
+    </div>
+    <div class="row mt-3">
+        <div class="col-5 col-sm-5 col-md-5 col-lg-5 mx-auto">
+            <table class="table border">
+                <thead>
+                    <tr>
+                        <th scope="col">Category</th>
+                        <th scope="col">Number of Downloaded Books</th>
+                    </tr>
+                    <tbody>
+                        {% for i in range(category|length) %}
+                        <tr>
+                            <td>{{category[i]}}</td>
+                            <td>{{value[i]}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

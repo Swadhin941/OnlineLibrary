@@ -1,0 +1,175 @@
+{% extends 'Layout.html' %}
+{% block body %}
+<style>
+    dt {
+        display: inline-block;
+        font-size: 1.5rem;
+    }
+
+    .text-yellow {
+        color: rgb(250, 250, 0);
+    }
+</style>
+<div class="container">
+    <div class="row">
+        <div class="col-2 col-sm-2 col-md-2">
+            <img src="{{book[5]}}" alt="" class="img-fluid w-100" style="height: 150px;">
+        </div>
+        <div class="col-10 col-sm-10 col-md-10 col-lg-10">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title text-success fw-bold">{{book[1]}}</h4>
+                    <div class="d-flex" id="avg">
+
+                    </div>
+                    <span id="total"></span>
+                    <div class="card-text">by {{book[4]}}</div>
+                    <div class="card-text">ISBN: {{book[2]}}</div>
+                    <div class="card-text">Price: {{book[8]}}</div>
+                    <div class="card-text">Category: {{book[3]}}</div>
+                    <div class="card-text"> <span class="fw-bold">Description</span>: {{book[6]}}</div>
+                    <p class="card-text fw-bold fs-4 m-0">Tell us what your opinion</p>
+                    <div class="text-dark" id="rating">
+                        <dl class="d-flex ">
+                            <dt class="p-1"><i class="bi bi-star-fill"></i></dt>
+                            <dt class="p-1"><i class="bi bi-star-fill"></i></dt>
+                            <dt class="p-1"><i class="bi bi-star-fill"></i></dt>
+                            <dt class="p-1"><i class="bi bi-star-fill"></i></dt>
+                            <dt class="p-1"><i class="bi bi-star-fill"></i></dt>
+                        </dl>
+                    </div>
+                    <div id="bttns">
+                        <button class="btn btn-success" id="cart"><i class="bi bi-cart me-1"></i>Add to Cart</button>
+                        <a href="{{url_for('download', pdf= book[7], isbn = book[2], category = book[3])}}" class="btn btn-warning">Download</a>
+                        <button class="btn btn-danger" id="wish"><i class="bi bi-heart me-1"></i>Add to Wishlist</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        let addWish= true;
+        $.ajax({
+            url: '/wishListCheck',
+            type: 'get',
+            data:{
+                isbn : "{{book[2]}}",
+            },
+            success: function(data){
+                if(data.status === 404){
+                    addWish = true;
+                }
+                else{
+                    addWish = false;
+                    document.getElementById('wish').innerHTML = '<i class="bi bi-heart-fill me-1"></i>Added to Wishlist';
+                }
+            }
+
+        })
+        document.getElementById('wish').addEventListener('click', function(){
+            if(addWish === true){
+                addWish= false;
+                $.ajax({
+                    url: '/addWish',
+                    type: 'get',
+                    data:{
+                        isbn: "{{book[2]}}",
+                        bookname: "{{book[1]}}",
+                        image: "{{book[5]}}"
+                    },
+                    success: function(data){
+                        if(data.status == 200){
+                            window.location.reload();
+                        }
+                    }
+                })
+            }
+        })
+        $("dt").mouseover(function () {
+            let current = $(this);
+            $("dt").each(function (index) {
+                $(this).addClass('text-warning')
+                if (index == current.index()) {
+                    return false;
+                }
+            })
+        })
+        $("dt").click(function () {
+            $("dt").removeClass("text-yellow")
+            $(".text-warning").addClass("text-yellow")
+            $("#mass").html($(".text-yellow").length)
+            rat_val = $(".text-yellow").length
+
+            $.ajax({
+                url: '/rating',
+                type: 'get',
+                data: {
+                    isbn: "{{book[2]}}",
+                    rating: rat_val
+                },
+                success: function (data) {
+                    alert('Your' + rat_val + ' rating has been updated')
+                }
+            })
+        })
+        $("dt").mouseleave(function () {
+            $("dt").removeClass('text-warning');
+        })
+
+        document.getElementById('cart').addEventListener('click', function () {
+            let bookname = "{{book[1]}}"
+            let authorname = "{{book[4]}}";
+            let isbn = "{{book[2]}}";
+            let image = "{{book[5]}}";
+            let price = "{{book[8]}}";
+            let username = "{{session.get('username')}}";
+            let userid = "{{session.get('userid')}}";
+            console.log(bookname, authorname)
+            $.ajax({
+                url: "/addtocart",
+                type: "GET",
+                contentType: "application/json",
+                data: {
+                    bookname: bookname,
+                    authorname: authorname,
+                    isbn: isbn,
+                    price: price,
+                    username: username,
+                    userid: userid,
+                    image: image
+                },
+                success: function (data) {
+                    alert(data.message)
+                }
+            })
+        })
+        $.ajax({
+            url: '/customer',
+            type: 'get',
+            data: {
+                isbn: '{{book[2]}}'
+            },
+            success: function (data) {
+                let count = parseInt(data.rat);
+                document.getElementById('total').textContent = count
+                let avg = document.getElementById('avg');
+                for (let i = 1; i <= 5; i++) {
+                    let span = document.createElement('span');
+                    span.classList.add('p-1')
+                    if (i <= count) {
+                        span.innerHTML = `<i class="bi bi-star-fill text-success"></i> `
+                    }
+                    else {
+                        span.innerHTML = `<i class="bi bi-star-fill"></i> `
+                    }
+                    avg.appendChild(span)
+                }
+
+            }
+        })
+    })
+</script>
+{% endblock %}

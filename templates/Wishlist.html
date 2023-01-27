@@ -1,0 +1,41 @@
+{% extends 'Layout.html' %}
+{% block body %}
+<div class="container-fluid">
+    <div class="row">
+        {% if isbn|length == 0 %}
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="card p-5">
+                <h1 class="text-muted text-center " style="font-family: Verdana, Geneva, Tahoma, sans-serif; font-size: 3rem;">Nothing in your wishlist</h1>
+            </div>
+        </div>
+        {% else %}
+        {% for i in range(isbn|length) %}
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-2 col-sm-2 col-md-2 col-lg-2">
+                            <img src="{{image[i]}}" alt="" height="100" width="100">
+                        </div>
+                        <div class="col-10 col-sm-10 col-md-10 col-lg-10">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 class="card-title">{{bookname[i]}}</h4>
+                                    <span>ISBN: {{isbn[i]}}</span>
+                                </div>
+                                <div>
+                                    <a href="{{url_for('removeWish', isbn = isbn[i])}}" class="btn"><i class="bi bi-trash fs-3"></i></a>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

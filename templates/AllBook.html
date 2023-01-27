@@ -1,0 +1,59 @@
+{% extends 'Layout.html' %}
+{% block body %}
+<link rel="stylesheet" href="{{url_for('static', filename ='css/AllBook.css')}}">
+<div class="container-fluid">
+    <div class="row mt-2">
+        <div class="col-12 col-sm-6 col-md-6 col-lg-6 mx-auto">
+            <div class="d-flex">
+                <input type="text" class="form-control" placeholder="Search">
+                <button class="btn btn-outline-primary border-0"><i class="bi bi-search"></i></button>
+            </div>
+
+        </div>
+    </div>
+    <div class="row gy-2 mt-4">
+        {% for book in book %}
+        <div class="col-12 col-sm-6 col-md-3 col-lg-4">
+
+            <div class="card bookCard shadow-lg">
+                <div class="row ">
+                    <div class="col-4 col-sm-4 col-md-4 col-lg-4">
+                        <img src="{{book[5]}}" alt="" class="card-img-top" style="height: 200px;width: 100%;">
+                    </div>
+                    <div class="col-8 col-sm-8 col-md-8 col-lg-8">
+                        <div class="card-body">
+                            <div class="card-title fw-bold">{{book[1]}}</div>
+                            <div class="card-text">ISBN: {{book[2]}}</div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between">
+                        <span class="bg-success text-white p-2 border rounded">Price: {{book[8]}}</span>
+                        <a href="{{url_for('bookdetails',isbn = book[2])}}" class="btn btn-warning">Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <section class="mt-3">
+        <h3 class="text-center fw-bold">Top Rated Books</h3>
+        <hr>
+        <div class="row gy-2" id="topBook">
+
+        </div>
+    </section>
+    <!-- <button class="btn btn-primary" id="handleRecommend">Click to see the recommended books for you</button> -->
+    <section class="mt-3" id="recommend">
+
+        <h3 class="text-center fw-bold" >Recommended For You</h3>
+        <hr>
+        <div class="row gy-2" id="recommendedbook">
+
+        </div>
+    </section>
+</div>
+<script src="{{url_for('static', filename ='js/AllBook.js')}}"></script>
+{% endblock %}

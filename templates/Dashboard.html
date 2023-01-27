@@ -1,0 +1,94 @@
+{% extends 'Layout.html' %}
+
+{% block body %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 col-sm-6 col-md-6 col-lg-6">
+            <canvas id="downloadChart" height="500" width="500"></canvas>
+        </div>
+        <div class="col-12 col-sm-6 col-md-6 col-lg-6">
+            <canvas id="rating" height="500" width="500"></canvas>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: '/dashboard',
+            type: 'get',
+            success: function (data) {
+                console.log(data);
+                let ctx = document.getElementById('downloadChart');
+                new Chart(ctx, {
+                    type: 'polarArea',
+                    data: {
+                        labels: data.category,
+                        datasets: [{
+                            label: 'Number of Downloads',
+                            data: data.downloaded,
+                            backgroundColor: [
+                                'rgb(255, 99, 132)',
+                                'rgb(75, 192, 192)',
+                                'rgb(255, 205, 86)',
+                                'rgb(54, 162, 235)',
+                                'rgb(153, 102, 255)',
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: false,
+                        scales:{
+                            y:{
+                                title:{
+                                    display: true,
+                                    text: 'Number of Downloads'
+                                }
+                            },
+                            x:{
+                                title:{
+                                    display: true,
+                                    text: 'Category'
+                                }
+                            }
+                        }
+                    }
+                });
+                let ctx2 = document.getElementById('rating');
+                new Chart(ctx2, {
+                    type: 'bar',
+                    data: {
+                        labels: data.bookname,
+                        datasets: [{
+                            label: 'Rating of books',
+                            data: data.rating,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title:{
+                                    display: true,
+                                    text: 'Average Rating of books'
+                                }
+                            },
+                            x:{
+                                title:{
+                                    display: true,
+                                    text: 'Books Name'
+                                }
+                            }
+                        },
+                        responsive: false,
+                    }
+                });
+
+            }
+        })
+    })
+</script>
+
+{% endblock %}

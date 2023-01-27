@@ -1,0 +1,21 @@
+{% extends 'Layout.html' %}
+{% block body %}
+<link rel="stylesheet" href="{{url_for('static', filename ='css/login.css')}}">
+<div class="container-fluid">
+<div class="row">
+    <div class="col-12 col-sm-7 col-md-5 col-lg-5 mx-auto my-5">
+        <div class="card p-3 shadow-lg">
+            <h1 class="text-center">Login </h1>
+            <form class="form" id="loginForm">
+                <input type="email" class="form-control mb-2" placeholder="Enter Your Email Address" name="email" required>
+                <input type="password" class="form-control" placeholder="Enter Your Password" name="password" required>
+                <div class="d-flex justify-content-center mt-2">
+                    <button type="submit" class="btn btn-outline-success border-0">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+<script src="{{url_for('static', filename ='js/login.js')}}"></script>
+{% endblock %}

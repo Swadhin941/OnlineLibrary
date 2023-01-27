@@ -1,0 +1,122 @@
+{% extends 'Layout.html' %}
+{% block body %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/Admin.css')}}">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="w-75 mx-auto p-5 bg-secondary">
+                <h1 class="fs-1 fw-bold">Admin</h1>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-sm-12 col-md-12 col-lg-6">
+            <canvas id="allBookDashboard" style="width: 500px;"></canvas>
+        </div>
+        <div class="col-12 col-sm-12 col-md-6 col-lg-6">
+            <canvas id="DownloadUser" style="width: 500px;"></canvas>
+        </div>
+        <!-- <div class="col-12 col-sm-12 col-md-6 col-lg-4">
+            <canvas id="avgRating"></canvas>
+        </div> -->
+    </div>
+    <div class="row p-5 border border-1" id="bookList">
+        <div class="d-flex justify-content-end">
+            <button class="btn btn-primary mb-2">Add new Book</button>
+        </div>
+
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+$(document).ready(function(){
+    $.ajax({
+        url: "/admin",
+        type: 'get',
+        success: function(data){
+            console.log(data);
+            let bookList = document.getElementById('bookList')
+            for(let i =0 ;i<data.bookName.length; i++){
+                let div = document.createElement('div')
+                div.classList.add('col-12')
+                div.classList.add('col-sm-12')
+                div.classList.add('col-md-12')
+                div.classList.add('col-lg-12')
+                div.innerHTML = `<div class="card">
+                <div class="card-body d-flex justify-content-evenly">
+                    <h5 class="cart-title">${data.bookName[i]}</h5>
+                    <div class="card-text">${data.categoryName[i]}</div>
+                    <div>
+                        <button class="btn btn-success">Edit</button>
+                        <button class="btn btn-danger">Delete</button>
+                        
+                    </div>
+                </div>
+            </div>`
+            bookList.appendChild(div);
+            }
+            let ctx = document.getElementById('allBookDashboard');
+            new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.category,
+                        datasets: [{
+                            label: 'Total Books',
+                            data: data.numberOfBook,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title:{
+                                    display: true,
+                                    text: 'Number of Book in each category'
+                                }
+                            },
+                            x:{
+                                title:{
+                                    display: true,
+                                    text: 'Category Name'
+                                }
+                            }
+                        },
+                        responsive: false,
+                    }
+                });
+            let ctx1 = document.getElementById('DownloadUser');
+            new Chart(ctx1, {
+                    type: 'bar',
+                    data: {
+                        labels: data.uniqueUser,
+                        datasets: [{
+                            label: 'Total Books',
+                            data: data.userRating,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title:{
+                                    display: true,
+                                    text: 'Total rated by the users'
+                                }
+                            },
+                            x:{
+                                title:{
+                                    display: true,
+                                    text: 'User ID'
+                                }
+                            }
+                        },
+                        responsive: false,
+                    }
+                });
+        }
+    })
+})
+</script>
+{% endblock %}

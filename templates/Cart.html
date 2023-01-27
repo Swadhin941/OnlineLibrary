@@ -1,0 +1,261 @@
+{% extends 'Layout.html' %}
+{% block body %}
+<div class="container-fluid">
+    <div class="row" id="CartItem">
+
+    </div>
+    <div id="totalAmount">
+
+    </div>
+</div>
+<script>
+
+    let increment = (isbn) => {
+        let quantity;
+        $.ajax({
+            url: "/quantitySender",
+            type: "get",
+            data: {
+                isbn: isbn
+            },
+            success: function (data) {
+                quantity = parseInt(data.quantity);
+                $.ajax({
+                    url: '/incrementcart',
+                    type: 'get',
+                    data: {
+                        userid: "{{session.get('userid')}}",
+                        isbn: isbn,
+                        quantity: quantity + 1
+                    },
+                    success: function (incr) {
+
+                        $.ajax({
+                            url: "/QuantityAndTotalPrice",
+                            type: "get",
+                            data: {
+                                userid: "{{session.get('userid')}}"
+                            },
+                            success: function (last) {
+                                document.getElementById('totalAmount').innerHTML = `<div class="space-y-1 text-right">
+                <p>Total amount:
+                    <span class="font-semibold" id="total">${last.total}</span>$
+                </p>
+            </div>
+            <div class="flex justify-end space-x-4">
+                <button type="button" class="px-6 py-2 border rounded-md dark:border-violet-400">Back
+                </button>
+                <a style="cursor:pointer;"  onclick= "handleTotal('${last.total}')"
+                    class="px-6 py-2 border rounded-md dark:bg-violet-400 dark:text-gray-900 dark:border-violet-400">
+                    <span class="text-white sr-only sm:not-sr-only">Continue to Checkout </span>
+                </a>
+            </div>`
+                                window.location.reload()
+                            }
+                        })
+
+                    }
+                })
+            }
+        })
+
+    }
+    let decrement = (isbn) => {
+        let quantity;
+        $.ajax({
+            url: "/quantitySender",
+            type: "get",
+            data: {
+                isbn: isbn
+            },
+            success: function (data) {
+                quantity = parseInt(data.quantity);
+                if (quantity == 1) {
+                    alert("You can't decrease less than one item");
+                }
+                else {
+                    $.ajax({
+                        url: '/decrementcart',
+                        type: 'get',
+                        data: {
+                            userid: "{{session.get('userid')}}",
+                            isbn: isbn,
+                            quantity: quantity - 1
+                        },
+                        success: function (decr) {
+                            $.ajax({
+                                url: "/QuantityAndTotalPrice",
+                                type: "get",
+                                data: {
+                                    userid: "{{session.get('userid')}}"
+                                },
+                                success: function (last) {
+                                    document.getElementById('totalAmount').innerHTML = `<div class="space-y-1 text-right">
+                <p>Total amount:
+                    <span class="font-semibold" id="total">${last.total}</span>$
+                </p>
+            </div>
+            <div class="flex justify-end space-x-4">
+                <button type="button" class="px-6 py-2 border rounded-md dark:border-violet-400">Back
+                </button>
+                <a style="cursor:pointer;" onclick= "handleTotal('${last.total}')"
+                    class="px-6 py-2 border rounded-md dark:bg-violet-400 dark:text-gray-900 dark:border-violet-400">
+                    <span class="text-white sr-only sm:not-sr-only">Continue to Checkout </span>
+                </a>
+            </div>`
+                                    window.location.reload()
+                                }
+                            })
+                        }
+                    })
+                }
+            }
+        })
+
+    }
+    let remove = (isbn) => {
+        $.ajax({
+            url: "/deletecart",
+            type: "get",
+            data: {
+                isbn: isbn
+            },
+            success: function (data) {
+                window.location.reload()
+            }
+        })
+    }
+    $(document).ready(function () {
+
+        let div = document.getElementById('CartItem');
+        let total = document.getElementById('total');
+        let totalPrice = 0;
+        let subtotal;
+        let quantity;
+        $.ajax({
+            url: "/allcartbook",
+            type: "get",
+            data: {
+                userid: "{{session.get('userid')}}"
+            },
+            success: function (data) {
+                if (data.cartbook.length <= 0) {
+                    document.getElementById('CartItem').innerHTML = `
+                        <div class="card glass w-96 bg-base-100 shadow-xl">
+                            <figure class="px-10 pt-10">
+                                <img src="https://cdn4.vectorstock.com/i/1000x1000/86/23/sad-cartoon-icon-vector-9848623.jpg" alt="Shoes" class="rounded-xl" />
+                            </figure>
+                            <div class="card-body items-center text-center">
+                                <h2 class="card-title">Oh, No!</h2>
+                                <p>Nothing is added to the cart</p>
+                                <div class="card-actions">
+                                <a  href="{{url_for('allBook')}}"><button  class="btn btn-primary">Go bact to all Book</button></a> 
+                                </div>
+                            </div>
+                        </div>`;
+                }
+                else {
+
+                    for (let i = 0; i < data.cartbook.length; i++) {
+                        let ul = document.createElement('div')
+                        ul.classList.add('col-12')
+                        ul.classList.add('col-sm-12')
+                        ul.classList.add('col-md-12')
+                        ul.classList.add('col-lg-12')
+                        ul.classList.add('mx-auto')
+                        quantity = data.cartbook[i].quantity;
+                        ul.innerHTML = `
+                        <div class="card">
+                            <img src=${data.cartbook[i].image} class="card-img-top" alt="">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold">${data.cartbook[i].bookname}</h5>
+                                <p id="quantity" class="fs-5">Quantity: ${data.cartbook[i].quantity} </p>
+                            </div>
+                        </div> 
+                    <li class="flex flex-col py-6 sm:flex-row sm:justify-between">
+                    <div class="flex w-full space-x-2 sm:space-x-4">
+                        <img class="flex-shrink-0 object-cover w-20 h-20 dark:border-transparent rounded outline-none sm:w-32 sm:h-32 dark:bg-gray-500"
+                            src=${data.cartbook[i].image}
+                            alt="Polaroid camera">
+                        <div class="flex flex-col justify-between w-full pb-4">
+                            <div class="flex justify-between w-full pb-2 space-x-2">
+                                <div class="space-y-1">
+                                    <h3 class="text-lg font-semibold leading-snug sm:pr-8">${data.cartbook[i].bookname}</h3>
+                                    <p id="quantity" class="text-sm dark:text-gray-400">Quantity: ${data.cartbook[i].quantity} </p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-lg font-semibold">${data.cartbook[i].price}$</p>
+                                </div>
+
+                            </div>
+                            <div>
+                                <button class="pr-2" onclick= "increment('${data.cartbook[i].isbn}')">+</button>
+                                <button onclick= "decrement('${data.cartbook[i].isbn}')">-</button>
+                            </div>
+                            <div class="flex text-sm divide-x" onclick= "remove('${data.cartbook[i].isbn}')">
+                                <button type="button" class="flex items-center px-2 py-1 pl-0 space-x-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
+                                        class="w-4 h-4 fill-current">
+                                        <path
+                                            d="M96,472a23.82,23.82,0,0,0,23.579,24H392.421A23.82,23.82,0,0,0,416,472V152H96Zm32-288H384V464H128Z">
+                                        </path>
+                                        <rect width="32" height="200" x="168" y="216"></rect>
+                                        <rect width="32" height="200" x="240" y="216"></rect>
+                                        <rect width="32" height="200" x="312" y="216"></rect>
+                                        <path
+                                            d="M328,88V40c0-13.458-9.488-24-21.6-24H205.6C193.488,16,184,26.542,184,40V88H64v32H448V88ZM216,48h80V88H216Z">
+                                        </path>
+                                    </svg>
+                                    <span>Remove</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                    
+                    `;
+                        totalPrice += (parseInt(data.cartbook[i].price) * parseInt(data.cartbook[i].quantity))
+                        div.appendChild(ul)
+
+
+                    }
+                    $.ajax({
+                        url: "/QuantityAndTotalPrice",
+                        type: "get",
+                        data: {
+                            userid: "{{session.get('userid')}}"
+                        },
+                        success: function (last) {
+                            document.getElementById('totalAmount').innerHTML = `<div class="space-y-1 text-right">
+                <p>Total amount:
+                    <span class="font-semibold" id="total">${last.total}</span>$
+                </p>
+            </div>
+            <div class="flex justify-end space-x-4">
+                <button type="button" class="px-6 py-2 border rounded-md dark:border-violet-400">Back
+                </button>
+                <a style="cursor:pointer;" onclick="handleTotal('${last.total}')"
+                    class="px-6 py-2 border rounded-md dark:bg-violet-400 dark:text-gray-900 dark:border-violet-400">
+                    <span class="text-white sr-only sm:not-sr-only">Continue to Checkout </span>
+                </a>
+            </div>`
+                        }
+                    })
+                }
+            }
+        })
+    })
+    let handleTotal = (data) => {
+        $.ajax({
+            url: 'checkoutdata',
+            type: 'get',
+            data: {
+                total: data
+            },
+            success: function (d) {
+                location.href = "/allBook"
+            }
+        })
+    }
+</script>
+{% endblock %}
